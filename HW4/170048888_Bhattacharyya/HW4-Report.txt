@@ -1,0 +1,237 @@
+
+This is a description report for the HW4 CSE 508 project for "dnsinject" and "dnsdetect" implementation
+=======================================================================================================
+
+
+a) Test environment
+	
+	command:
+	———————
+	lsb_release -a
+
+	output:
+	——————
+	No LSB modules are available.
+	Distributor ID:	Ubuntu
+	Description:	Ubuntu 16.04.3 LTS
+	Release:	16.04
+	Codename:	xenial
+
+
+	command:
+	———————
+	uname -srm
+	
+	output:
+	——————
+	Linux 4.10.0-40-generic x86_64
+
+
+
+
+b) Compiler and its version
+   
+	command:
+	———————
+	gcc --version
+
+	output:
+	——————
+	gcc (Ubuntu 5.4.0-6ubuntu1~16.04.5) 5.4.0 20160609
+	Copyright (C) 2015 Free Software Foundation, Inc.
+	This is free software; see the source for copying conditions.  There is NO
+	warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+
+
+c) Command line with the options to run your programs (both server and client)
+
+
+	Related Files:
+	—————————————
+		-Makefile : this will clean the previous compiled files and compile dnsinject.c and dnsdetect.c and generate the executable file.
+
+		-dnsinject.c : this is the source file which consists the code for which can be used as spoofing victim's requested DNS details with local ip or ip's from a specified file.
+
+		-dnsdetect.c : this is the source file which consists the code for which can be used as detecting the spoofed DNS details and list them in console.
+
+		-dnsheader.h : this file contains the definitions and constants to be used in the dnsinject.c and dnsdetect.c files.
+
+		-hostnames.txt : This file contains the hostnames to be injected in the DNS spoofing
+				10.6.6.6      foo.example.com
+				10.6.6.6      bar.example.com
+				192.168.66.6  www.cs.stonybrook.edu
+				122.22.12.22  gmail.com
+				1.2.3.4       twitter.com
+		
+		-capture.pcap : This file contains the pcap trace of at least 1 successful attack instance generated using my dnsinject tool. I have executed [sudo ./dnsinject -h hostnames.txt -i enp0s3 "udp"] on host and [sudo ./dnsdetect -i enp0s3 "udp"  and  dig @8.8.8.8 gmail.com] on 2 terminals at client.
+
+		-dnsdetect_output.txt : This file contains output of my dnsdetect tool when fed with the above attack trace. I have executed the command [sudo ./dnsdetect "udp" -r capture.pcap] to get the same.
+
+	
+	
+	Prerequisites:
+	—————————————
+		-the libnet and pcap library have been installed on both the host and client machines
+			sudo apt-get install libnet1-dev
+			sudo apt-get install libpcap-dev
+
+
+	
+	Assumption:
+	——————————
+
+		-I have used 2 virtual machines connected using bridge networking mode. Host I have used to execute dnsinject and dnsdetect tool. And client one I have used to for captuing the tcpdump trace and test execution(dig command below).
+
+
+
+	Execution Steps:
+	————————————————
+
+		on host machine(inject and detect)
+		==================================
+			-DNS inject tool needs to execute in host for spoofing the DNS requests
+			-DNS detect tool, running on the same host, detects the spoofed request sent at victim
+
+
+		>cd HW4_dnsinject_dnsdetect_170048888
+
+		>make
+		
+		For DNS inject:
+		--------------
+		>sudo ./dnsinject -i enp0s3
+		
+
+		with hostname file
+		>sudo ./dnsinject -i enp0s3 -h hostnames.txt
+		
+
+		with hostname and BPF filter
+		>sudo ./dnsinject -i enp0s3 -h hostnames.txt "udp"
+		
+
+
+		For DNS detect:
+		---------------
+		>sudo ./dnsdetect -i enp0s3
+		
+
+		with BPF filter
+		>sudo ./dnsdetect -i enp0s3 "udp"
+		
+
+		Read capture file
+		>sudo ./dnsdetect -r capture.pcap
+			-result is placed in dnsdetect_output.txt file
+
+
+		Read capture file with BPF filter
+		>sudo ./dnsdetect -r capture.pcap "udp"
+			-result is placed in dnsdetect_output.txt file
+		
+
+
+
+		on client machine(test and capture)
+		===================================
+			-send DNS requests
+			-capture the transactions using pcap and write the file on the same directory
+
+
+		
+		For pacp capture:
+		-----------------
+		>sudo tcpdump -i enp0s3 -w capture.pcap
+
+
+		For testing:
+		------------
+		>dig @8.8.8.8 gmail.com
+		>dig @8.8.8.8 ubuntu.com
+
+
+
+		Note: 1.While testing the dnsinject tool with -h option, please pass the url address(gmail.com) without "www" in dig command.
+			2.The testing can be done by running DNS inject on host and DNS detect on client and can be captured from any VM. Testing needs to done from client system.
+
+
+
+d) Description about the design of your dnsinject.c and dnsdetect.c
+
+	Implementation of dnsinject.c:
+	———————————————————————————---
+		-This file contains the implementation of the first part of the assignment. It uses the definitions and constants defined in the file "constants.h". This file contains the several functions, global variables and a main function which is described as bellow:
+		
+		
+		-the four global variables:
+
+			int forgedHostNames = 0;
+			char ips[MAX_FORGED_HOSTNAMES][IP_MAX_LENGTH];
+			char hostNames[MAX_FORGED_HOSTNAMES][MAX_HOSTNAME_LENGTH]; 
+			char *interface = NULL;
+
+		
+		-readHostNamesFile(): If we have "-h" option, this function reads the file and fills the two arrays ips and hostNames (global variables) {it adds "www." to the beginning of the hostNames which don't have "www." prefix}
+		
+		
+		-process_packet(): 
+			This function gets called per captured packet. 
+			It takes the IP portion of the packet and checks whether it's transport layer protocol is UDP or not. If it is not UDP protocol, it simply ignores the packet. If it's transport layer protocol is UDP, it extracts the UDP portion and checks the destination port of the packet. If it is not 53, then again, it can't be DNS-protocol related packet and the program ignores the packet. If it's dest port is 53, it is a DNS-protocol related packet. However, one more check is required to be sure that it is a query type A. If the query is not of type A, the function ignores such a packet. If it is a query of type A, by using the dn_expand() function, it takes out the hostName to be queried and adds "www." prefix. Then, if we had "-h" option, the program checks to see whether it needs to inject spoofed DNS reply (in other words, it checks whether the requested hostName is among the hostNames listed in the file or not). Else, the program extracts the ip address of the interface (on the local machine), it listens to and considers it as the fake ip_address. Then, it injects the spoofed DNS reply.
+
+		
+		-main():
+			This function is the starting point of the dnsinject program. It gets and parses the program arguments (-i, -h and BPFExpression arguments). This function captures the packets and calls the function process_packet per captured packet.
+
+
+
+
+
+	Implementation of dnsdetect.c:
+	———————————————————————————---
+		-This file contains the implementation of the second part of the assignment. It uses the definitions and constans defined in the file "constants.h". This file contains the several functions, global variables and a main function which is described as bellow:
+
+		
+		-the four global variables:
+
+			int totalDNSResponseReceived = 0;
+			struct DNSResponseInfo dnsResponses[DNS_RESPONSES_MAX];
+			char *interface = NULL;
+
+
+		-process_packet():
+			This function gets called per DNS-response packet captured (DNS-response means we filter all the packets which are not UDP or their udp source_port is not 53). It extracts all the answer-IP addresses inside the DNS-response packet and compares the id, hostName (to be resolved) with all the previous DNS response packets observed, which have been kept inside the array dnsResponses. If there is any other previous DNS response with the same id and hostName, then the function isThereAnyCommon() is called to check whether there is a common answer-IP address in both DNS responses [this further check is required due to round robin DNS load balancing. If there is no common answer-IP address, then, it is recognized as an attack and all the information of the attack is being printed to the user (including the attack detection time, TXID (which is the DNS id), hostName (to be resolved) and list of all the IP addresses from both DNS-response packets. Otherwise (if the new packet doesn't involve in any attack), all its information is stored in the array dnsResponses for future possible attack detection.
+
+		-isThereAnyCommon():
+            		This function is used to check whether there is any answer-IP in common between the answers stored in the 2D character array answers1 and answers. If there is, it returns 1 and if there is not, it returns 0.
+
+
+		- const char *timestamp_string():
+			This function returns the timestamp of the packet. Used for printing the information of the time of the attack.
+
+
+		-readName():
+			This function takes out the hostName inside the answer resource record of the DNS response. This function is used in the process_packet function.
+
+
+
+
+e) References I did cite during writing the code:
+		https://www.secureworks.com/blog/dns-cache-poisoning
+		https://en.wikipedia.org/wiki/Packet_injection
+		http://www.binarytides.com/dns-query-code-in-c-with-linux-sockets/
+		https://www.giac.org/paper/gcih/364/dns-spoofing-attack/103863
+		https://docstore.mik.ua/orelly/networking_2ndEd/dns/ch15_02.htm
+		http://www.gnu.org/software/adns/
+		http://www.tcpdump.org/tcpdump_man.html
+		http://www.thegeekstuff.com/2012/02/dig-command-examples/
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,131 @@
+
+dnsdetect tool Output
+=====================
+
+
+>sudo ./dnsdetect -r capture.pcap 
+DNS Detection Started::Interface Flag = 0, interface = (null), Tracefile Flag = 1, traceFile = capture.pcap, BPFExpression = (null)
+
+
+2017-11-24 13:18:20.657914 DNS poisoning attempt
+TXID 0x7173 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:20.659091 DNS poisoning attempt
+TXID 0xbd44 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:21.682114 DNS poisoning attempt
+TXID 0x2ed7 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:21.684004 DNS poisoning attempt
+TXID 0x8675 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:22.706097 DNS poisoning attempt
+TXID 0xf6d0 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:22.707477 DNS poisoning attempt
+TXID 0xd3b0 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:22.718288 DNS poisoning attempt
+TXID 0xce5e Request www.gmail.com
+Answer1 [122.22.12.22   ]
+Answer2 [172.217.10.5   ]
+--------------------------
+
+2017-11-24 13:18:23.730187 DNS poisoning attempt
+TXID 0xd599 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:23.731362 DNS poisoning attempt
+TXID 0xed1f Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+
+
+
+
+
+
+
+
+
+
+>sudo ./dnsdetect "udp" -r capture.pcap 
+DNS Detection Started::Interface Flag = 0, interface = (null), Tracefile Flag = 1, traceFile = capture.pcap, BPFExpression = udp
+
+
+2017-11-24 13:18:20.657914 DNS poisoning attempt
+TXID 0x7173 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:20.659091 DNS poisoning attempt
+TXID 0xbd44 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:21.682114 DNS poisoning attempt
+TXID 0x2ed7 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:21.684004 DNS poisoning attempt
+TXID 0x8675 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:22.706097 DNS poisoning attempt
+TXID 0xf6d0 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:22.707477 DNS poisoning attempt
+TXID 0xd3b0 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:22.718288 DNS poisoning attempt
+TXID 0xce5e Request www.gmail.com
+Answer1 [122.22.12.22   ]
+Answer2 [172.217.10.5   ]
+--------------------------
+
+2017-11-24 13:18:23.730187 DNS poisoning attempt
+TXID 0xd599 Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
+2017-11-24 13:18:23.731362 DNS poisoning attempt
+TXID 0xed1f Request www.gmail.com
+Answer1 [172.217.10.5   ]
+Answer2 [122.22.12.22   ]
+--------------------------
+
