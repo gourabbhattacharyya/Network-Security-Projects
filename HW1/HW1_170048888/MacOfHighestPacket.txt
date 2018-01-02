@@ -1,0 +1,49 @@
+PacketCount	MACAddress	SourceIP
+——————————-	—————————-	———————-
+11886 c4:3d:c7:17:6f:9b 192.168.0.1
+2011 00:16:44:b5:86:2e 192.168.0.3
+1970 44:6d:57:f6:7e:00 192.168.0.11
+1451 44:6d:57:f6:7e:00 192.168.0.255
+ 836 00:0c:29:e9:94:8e 192.168.0.200
+ 697 c4:3d:c7:17:6f:9b 91.189.91.14
+ 645 00:16:44:b5:86:2e 192.168.0.255
+ 387 34:c0:59:9d:1c:79 192.168.0.7
+ 369 c4:3d:c7:17:6f:9b 91.189.92.190
+ 225 00:00:48:46:6c:97 192.168.0.255
+ 164 3c:d0:f8:4e:4b:a1 192.168.0.10
+  99 fc:25:3f:8e:4c:9a 192.168.0.5
+  79 3c:d0:f8:4e:4b:a1 broadcasthost.bootps:
+  61 c4:3d:c7:17:6f:9b nernst.canonical.com.http
+  60 34:c0:59:9d:1c:79 broadcasthost.bootps:
+  41 00:16:44:b5:86:2e broadcasthost.bootps:
+  38 c4:3d:c7:17:6f:9b scandium.canonical.com.http
+  38 c4:3d:c7:17:6f:9b cache1.service.virginmedia.net
+  38 00:00:48:46:6c:97 192.168.0.12
+  36 c4:3d:c7:17:6f:9b leech.it.http
+  32 c4:3d:c7:17:6f:9b 1.234.31.20
+  23 e8:8d:28:6d:c8:f5 broadcasthost.bootps:
+  18 30:17:c8:3e:4e:82 broadcasthost.bootps:
+  16 c4:3d:c7:17:6f:9b 92.240.68.152
+  12 c4:3d:c7:17:6f:9b m603-mp1-cvx1b.lan.ntl.com
+  12 c4:3d:c7:17:6f:9b avocado.canonical.com.http
+  12 44:6d:57:f6:7e:00 broadcasthost.bootps:
+  11 c4:3d:c7:17:6f:9b 159.148.96.184
+  10 e8:8d:28:6d:c8:f5 192.168.0.6
+   9 fc:25:3f:8e:4c:9a broadcasthost.bootps:
+   8 e0:cb:1d:16:13:b2 broadcasthost.bootps:
+   7 c4:3d:c7:17:6f:9b server-216-137-63-137.lhr3.r.cloudfront
+   7 c4:3d:c7:17:6f:9b ec2-46-51-197-89.eu-west-1.compute.amazonaws
+   6 c4:3d:c7:17:6f:9b server-216-137-63-121.lhr3.r.cloudfront
+   6 c4:3d:c7:17:6f:9b jujube.canonical.com.http
+   5 c4:3d:c7:17:6f:9b 122.154.101.54
+   5 34:c0:59:9d:1c:79 192.168.0.2
+   4 c4:3d:c7:17:6f:9b privet.canonical.com.http
+   4 c4:3d:c7:17:6f:9b mowback.com.36350
+   4 c4:3d:c7:17:6f:9b ec2-46-51-197-88.eu-west-1.compute.amazonaws
+   4 c4:3d:c7:17:6f:9b broadcasthost.bootpc:
+   3 44:6d:57:f6:7e:00 broadcasthost.enpc:
+   3 00:16:44:b5:86:2e 169.254.255.255
+   2 c4:3d:c7:17:6f:9b tansania.chi.uni-hannover.de
+   2 c4:3d:c7:17:6f:9b m593-mp1-cvx1b.lan.ntl.com
+   2 00:0c:29:e9:94:8e 192.168.0.255
+   2 00:00:48:46:6c:97 broadcasthost.bootps:
