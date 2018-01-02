@@ -1,0 +1,190 @@
+
+Example Output
+==============
+
+
+Compile the code:
+================
+>make
+
+rm -f -f *~ *.o *.out pbproxy
+gcc -g pbproxy.c -o pbproxy -lcrypto -lpthread
+
+
+
+serverMode:
+==========
+
+Check current directory:
+———————————————————————
+>pwd
+/home/gourab/Desktop/HW3
+
+
+
+Check stats before established connection:
+—————————————————————————————————————————
+>sudo netstat -natp | grep ESTABL
+
+tcp        0      0 10.0.2.15:39347         172.24.17.126:22        ESTABLISHED 3620/fzsftp
+
+
+
+Start listening for the incoming connection using pbproxy:
+—————————————————————————————————————————————————————————
+
+>./pbproxy -l 2222 -k mykey localhost 22
+
+Initializing pbproxy using following parameters for PbProxy by Gourab Bhattacharyya_170048888:
+ ServerMode: true
+ ListeningPort: 2222
+ KeyFile: mykey
+ Destination: localhost
+ DestinationPort: 22
+
+
+New client thread started
+Connection to ssh established Successfully!
+New client thread started
+Connection to ssh established Successfully!
+Server relay thread exiting...!!!
+New client thread started
+Connection to ssh established Successfully!
+Server relay thread exiting...!!!
+New client thread started
+Connection to ssh established Successfully!
+Server relay thread exiting...!!!
+Server relay thread exiting...!!!
+^C
+
+
+
+
+
+
+clientMode:
+==========
+
+Check current location:
+——————————————————————
+pwd
+/home/gourab/Desktop/HW3
+
+
+
+Start SSH connection from client terminal 1:
+————————————————————————————————
+>ssh -o "ProxyCommand ./pbproxy -k mykey gourab-VirtualBox 2222" localhost
+
+Initializing pbproxy using following parameters for PbProxy by Gourab Bhattacharyya_170048888:
+ ServerMode: false
+ ListeningPort: (null)
+ KeyFile: mykey
+ Destination: gourab-VirtualBox
+ DestinationPort: 2222
+
+
+gourab@localhost's password: 
+Welcome to Ubuntu 16.04.3 LTS (GNU/Linux 4.10.0-38-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+4 packages can be updated.
+4 updates are security updates.
+
+Last login: Tue Nov  7 04:03:09 2017 from 127.0.0.1
+
+
+Check directory and other things and terminate from the connected server:
+————————————————————————————————————————————————————————————————————————
+gourab@gourab-VirtualBox:~$ pwd
+/home/gourab
+
+gourab@gourab-VirtualBox:~$ ls -ltr
+total 44
+-rw-r--r-- 1 gourab gourab 8980 Oct 24 02:23 examples.desktop
+drwxr-xr-x 2 gourab gourab 4096 Oct 24 02:33 Videos
+drwxr-xr-x 2 gourab gourab 4096 Oct 24 02:33 Templates
+drwxr-xr-x 2 gourab gourab 4096 Oct 24 02:33 Public
+drwxr-xr-x 2 gourab gourab 4096 Oct 24 02:33 Pictures
+drwxr-xr-x 2 gourab gourab 4096 Oct 24 02:33 Music
+drwxr-xr-x 2 gourab gourab 4096 Oct 24 02:33 Documents
+drwxr-xr-x 2 gourab gourab 4096 Nov  6 06:00 Downloads
+drwxr-xr-x 5 gourab gourab 4096 Nov  7 03:54 Desktop
+
+gourab@gourab-VirtualBox:~$ hostname
+gourab-VirtualBox
+
+gourab@gourab-VirtualBox:~$ exit
+logout
+Connection to localhost closed.
+
+
+
+
+
+Start SSH connection from client terminal 2:
+———————————————————————————————————————————
+>ssh -o "ProxyCommand ./pbproxy -k mykey gourab-VirtualBox 2222" localhost
+
+Initializing pbproxy using following parameters for PbProxy by Gourab Bhattacharyya_170048888:
+ ServerMode: false
+ ListeningPort: (null)
+ KeyFile: mykey
+ Destination: gourab-VirtualBox
+ DestinationPort: 2222
+
+
+gourab@localhost's password: 
+Welcome to Ubuntu 16.04.3 LTS (GNU/Linux 4.10.0-38-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+4 packages can be updated.
+4 updates are security updates.
+
+Last login: Tue Nov  7 03:41:54 2017 from 127.0.0.1
+
+
+
+Check directory and other things and terminate from the connected server:
+————————————————————————————————————————————————————————————————————————
+gourab@gourab-VirtualBox:~$ pwd
+/home/gourab
+
+gourab@gourab-VirtualBox:~$ date
+Tue Nov  7 04:08:33 EST 2017
+
+gourab@gourab-VirtualBox:~$ exit
+logout
+Connection to localhost closed.
+
+
+
+
+
+
+Note:
+=====
+
+In client mode for initial/unexpectedly 2-3 time we might get the below error in client console or something like below in server console. In both the cases please use (ctrl + c) key to terminate in existing client session if running and try again to connect to the server using SSH. 
+
+Client:
+——————
+Bad packet length 582483413.
+ssh_dispatch_run_fatal: Connection to UNKNOWN port 0: message authentication code incorrect
+
+
+or
+
+Client Exiting!!
+
+
+Server:
+——————-
+Server relay thread exiting...!!!
+

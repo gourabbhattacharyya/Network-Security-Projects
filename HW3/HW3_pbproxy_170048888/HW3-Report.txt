@@ -1,0 +1,186 @@
+
+This is a description report for the HW3 CSE 508 project for "plugboard" proxy implementation
+======================================================================================================
+
+
+a) Test environment
+	
+	command:
+	———————
+	lsb_release -a
+
+	output:
+	——————
+	No LSB modules are available.
+	Distributor ID:	Ubuntu
+	Description:	Ubuntu 16.04.3 LTS
+	Release:	16.04
+	Codename:	xenial
+
+
+	command:
+	———————
+	uname -srm
+	
+	output:
+	——————
+	Linux 4.10.0-38-generic x86_64
+
+
+
+
+b) Compiler and its version
+   
+	command:
+	———————
+	gcc --version
+
+	output:
+	——————
+	gcc (Ubuntu 5.4.0-6ubuntu1~16.04.5) 5.4.0 20160609
+	Copyright (C) 2015 Free Software Foundation, Inc.
+	This is free software; see the source for copying conditions.  There is NO
+	warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+
+
+c) Command line with the options to run your programs (both server and client)
+
+
+	Related Files:
+	—————————————
+		-Makefile : this will clean the previous complied files and compile the main pbproxy.c file and generate the executable file.
+		-pbproxy.c : this is the main source file which consists the Code for which can be used as server and proxy mode and perform ssh commands. This is written in C and works in ubuntu machine.
+		-mykey : this file contains the symmetric key and used for encrypted connection for ssh and provide an extra layer of security.
+		-Results.txt : This contains the sample output from connection from multiple clients using SSH.
+
+
+	Prerequisites:
+	—————————————
+		-Need to install ssl library first to use the program. Install by using the following command:
+			sudo apt-get install libssl-dev
+
+
+	Assumption:
+	——————————
+		-Below commands executed within the same VM and using multiple console(3-4), one for server mode and all the remaining as client.	
+
+
+
+	Execution Steps:
+	————————————————
+		>cd HW3_pbproxy_170048888
+
+		>make
+
+		-To use pbproxy in server mode need to pass the listener port, keyfile and destination host with port		
+			
+			>./pbproxy -l 2222 -k mykey localhost 22
+			
+				or
+		
+			>./pbproxy -l 2222 -k mykey IP(10.0.2.15) 22
+		 
+
+		-To run pbproxy in client mode with SSH command pass the compiled file with ProxyCommand command and pass the keyfile and destination host
+			
+			>cd HW3_pbproxy_170048888
+		
+			>make
+		
+			>ssh -o "ProxyCommand ./pbproxy -k mykey hostname(gourab-VirtualBox) 2222" localhost
+
+				or
+
+			>ssh -o "ProxyCommand ./pbproxy -k mykey IP(10.0.2.15) 2222" IP(10.0.2.15)
+			
+			>exit
+ 
+		-to run the pbproxy from multiple client first start in one server and connect from multiple server using the keyfile and host details
+
+		-to terminate the executable at server press (ctrl + c)
+
+
+		Note:
+		————
+		1. If below message appears in server console unexpectedly
+
+			Server relay thread exiting...!!!
+
+		or
+
+			below message appears on client console unexpectedly
+
+			Client Exiting!!
+
+		then needs to restart the client connection again from client console.
+
+		-for more details on output, please check Results.txt.
+
+
+
+d) Description about the design of your pbproxy
+
+	Implementation of pbproxy.c:
+	———————————————————————————
+		-the modules in the implementations are :
+			-main():
+				This is the first step of execution. This service will read the arguments passed from command line, read the file content from key, read the port details from socket, initialize new thread, new connection, bind server address with socket address and keep on listens for the incoming connections(server mode), decrypt the keyfile and establish connection with server(client mode).
+
+		
+			-server_thread():
+				This will create a new server thread for each connection request from the client, read data from stdin and socket and execute them.
+
+
+			-read_file():
+				This will read the keyfile and put the content in a buffer and returns the same.
+
+			-init_ctr():
+				This module will read the dynamic initialization vector and copy it in ivec variable of CTR struct type variable.
+
+			-serverMode:
+				-In server mode multiple concurrent session can run. Each time a new thread is created and and create a tcp connection and listen from the client. From the received data first 8bytes used as IV and decrypt the remaining data using the same IV and write that in the destination socket. If something received from the created socket then simply write that to first socket.
+
+			-clientMode:
+				-Here, I am reading data from socket and stdin inside a while loop in nonblocking mode, generate Initialization Vector and seed the them together to server.		
+
+
+
+
+e) References I did cite during writing the code
+	
+	NetCat:
+		http://nc110.sourceforge.net/
+		http://www.catonmat.net/blog/unix-utilities-netcat/
+		https://www.digitalocean.com/community/tutorials/how-to-use-netcat-to-establish-and-test-tcp-and-udp-connections-on-a-vps
+
+	SSH:
+		https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Proxies_and_Jump_Hosts
+		https://pagekite.net/wiki/Howto/SshOverPageKite/
+
+	Socket Programming:
+		http://www.geeksforgeeks.org/socket-programming-cc/
+		http://www.thegeekstuff.com/2011/12/c-socket-programming/?utm_source=feedburner
+		https://www.programminglogic.com/example-of-client-server-program-in-c-using-sockets-and-tcp/
+		http://www.cs.rpi.edu/~moorthy/Courses/os98/Pgms/socket.html
+
+
+	AES CTR 128 tutorials and examples:
+		https://stackoverflow.com/questions/20039066/aes-ctr128-encrypt-string-and-vice-versa-ansi-c 		https://stackoverflow.com/questions/3141860/aes-ctr-256-encryption-mode-of-operation-on-openssl
+		https://stackoverflow.com/questions/29441005/aes-ctr-encryption-and-decryption
+		http://www.gurutechnologies.net/blog/aes-ctr-encryption-in-c/
+
+
+	Multithreading implementation:
+		https://computing.llnl.gov/tutorials/pthreads/
+		http://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html
+		http://timmurphy.org/2010/05/04/pthreads-in-c-a-minimal-working-example/ 		http://www.geeksforgeeks.org/multithreading-c-2/
+
+
+
+
+
+
+
+
